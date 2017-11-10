@@ -6,6 +6,7 @@ export default class Renderer extends Context {
   constructor() {
     super()
     this.isOffscreenCanvas = true
+    this.imageSmoothingEnabled(false)
   }
   
   // Adds the canvas to the target element
