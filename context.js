@@ -15,7 +15,7 @@ function Context() {
   
 }
 
-Context.prototype = (() => {
+Context.prototype = (function () {
   
   let proto = {}
   
