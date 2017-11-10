@@ -76,7 +76,11 @@ export default class Renderer extends Context {
     return {x: 0, y: 0, width, height}
   }
   
-  draw(target, x = 0, y = 0, width, height) {
+  resize() {
+    
+  }
+  
+  draw(target, x = 0, y = 0, width = this.canvas.width, height = this.canvas.height) {
     
     // only allows drawing on Renderer instances
     if (!(target instanceof Renderer)) {
@@ -84,8 +88,6 @@ export default class Renderer extends Context {
     }
     
     let source = this.dimensions()
-    if (!width)   width = source.width
-    if (!height)  height = source.height
     
     let data = this.getImageData(source.x, source.y, source.width, source.height)
     this.putImageData(data, x, y, width, height)
