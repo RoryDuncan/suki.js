@@ -34,12 +34,12 @@ export default class Context {
   constructor() {
     
     this.canvas = document.createElement("canvas")
-    this.context = this.canvas.getContext("2d")
+    let context = this.context = this.canvas.getContext("2d")
   
     // extend the canvas's context
     // for-in iterates over prototype methods, as well
     for (let key in context) {
-      let value = context[value]
+      let value = context[key]
       let isGetter = false
       
       // detect if it's a method or a property

@@ -67,73 +67,64 @@ class EventEmitter {
   }
 }
 
-const nonChainableContextItems = [
+const valueReturningMethods = [
   "getImageData",
   "createImageData",
   "isPointInStroke",
   "isPointInPath"
 ];
 
+let chainMethod = function(wrapper, fn, isGetter) {
+  if (isGetter) {
+    return (...args) => fn.apply(wrapper.context, ...args)
+  }
+  else return (...args) => {
+    fn.apply(wrapper.context, ...args); 
+    return wrapper
+  }
+};
+
+// chains a property as a function
+// ->   ctx.text(value) instead of ctx.text = value
+let chainProperty = function(wrapper, key) {
+  return (value) => {
+    if (typeof value == "undefined") {
+      return wrapper.context[key]
+    }
+    wrapper.context[key] = value;
+    return wrapper
+  }
+};
 
 // not defined as a class because we programmatically create the prototype below.
-
-function Context() {
-  this.canvas = document.createElement("canvas");
-  this.context = this.canvas.getContext("2d"); 
-}
-
-Context.prototype = (function () {
+class Context {
   
-  let proto = {};
-  
-  let canvas = document.createElement("canvas");
-  let context = canvas.getContext("2d");
-  
-  // used for chaining context methods
-  let chainMethod = function(fn, isGetter) {
-    if (isGetter) {
-      return function(...args) {
-        fn.apply(this.context, ...args);
-      }
-    }
-    else return function(...args) {
-      fn.apply(this.context, ...args); 
-      return this;
-    }
-  };
-  
-  // chains a property as a function
-  // ->   ctx.text(value) instead of ctx.text = value
-  let chainProperty = function(key) {
-    return (value) => {
-      if (typeof value == "undefined") {
-        return this.context[key]
-      }
-      this.context[key] = value;
-      return this;
-    }
-  };
-  
-  // for-in iterates over prototype methods, as well
-  for (let key in context) {
-    let value = context[key];
-    let isGetter = false;
+  constructor() {
     
-    // detect if it's a method or a property
-    if (typeof value == "function") {
+    this.canvas = document.createElement("canvas");
+    let context = this.context = this.canvas.getContext("2d");
+  
+    // extend the canvas's context
+    // for-in iterates over prototype methods, as well
+    for (let key in context) {
+      let value = context[key];
+      let isGetter = false;
       
-      if (nonChainableContextItems.includes(key)) {
-        isGetter = true;
+      // detect if it's a method or a property
+      if (typeof value == "function") {
+        
+        if (valueReturningMethods.includes(key)) {
+          isGetter = true;
+        }
+        
+        this[key] = chainMethod(this, value, isGetter);
       }
-      
-      proto[key] = chainMethod(value, isGetter);
-    }
-    else if (key != "canvas") {
-      proto[key] = chainProperty(key);
+      else if (key != "canvas") {
+        this[key] = chainProperty(this, key);
+      }
     }
   }
-  return proto;
-})();
+}
 
 /* global CanvasRenderingContext2D */
 class Renderer extends Context {
@@ -242,7 +233,9 @@ class Renderer extends Context {
   
 }
 
-const defer = (fn) => window.setTimeOut(fn, 0);
+const defer = (fn) => window.setTimeout(fn, 0);
+
+const deferred = fn => fn => defer(fn);
 
 class Suki {
   
@@ -258,7 +251,7 @@ class Suki {
     
     this.renderer.addCanvasToDOM();
     
-    let triggerReady = defer(() => {
+    let triggerReady = deferred(() => {
       that.isReady = true;
       that.events.trigger("ready");
       return true

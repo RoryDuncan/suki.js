@@ -1,7 +1,7 @@
 
 import EventEmitter from "./events"
 import Renderer from "./renderer"
-import { defer } from "./utils"
+import { deferred } from "./utils"
 
 export default class Suki {
   
@@ -17,7 +17,7 @@ export default class Suki {
     
     this.renderer.addCanvasToDOM()
     
-    let triggerReady = defer(() => {
+    let triggerReady = deferred(() => {
       that.isReady = true
       that.events.trigger("ready")
       return true

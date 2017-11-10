@@ -1,6 +1,8 @@
 export const noop = () => void 0
 
-export const defer = (fn) => window.setTimeOut(fn, 0)
+export const defer = (fn) => window.setTimeout(fn, 0)
+
+export const deferred = fn => fn => defer(fn)
 
 export const chain = (wrapper, context = null, fn) => {
   
