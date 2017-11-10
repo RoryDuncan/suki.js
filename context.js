@@ -23,7 +23,7 @@ Context.prototype = (() => {
   let context = canvas.getContext("2d")
   
   // used for chaining context methods
-  let chainMethod = (fn, isGetter) => {
+  let chainMethod = function(fn, isGetter) {
     if (isGetter) {
       return (...args) => fn.apply(this.context, ...args)
     }
@@ -35,7 +35,7 @@ Context.prototype = (() => {
   
   // chains a property as a function
   // ->   ctx.text(value) instead of ctx.text = value
-  let chainProperty = (key) => {
+  let chainProperty = function(key) {
     return (value) => {
       if (typeof value == "undefined") {
         return this.context[key]
