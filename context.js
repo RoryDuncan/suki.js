@@ -8,7 +8,12 @@ const nonChainableContextItems = [
 
 
 // not defined as a class because we programmatically create the prototype below.
-function Context() {}
+function Context() {
+  
+  this.canvas = document.createElement("canvas")
+  this.context = this.canvas.getContext("2d")
+  
+}
 
 Context.prototype = (() => {
   
@@ -22,11 +27,9 @@ Context.prototype = (() => {
     if (isGetter) {
       return (...args) => fn.apply(this.context, ...args)
     }
-    else {
-    return (...args) => {
+    else return (...args) => {
       fn.apply(this.context, ...args) 
       return this;
-    }
     }
   }
   

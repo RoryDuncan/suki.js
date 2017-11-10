@@ -1,14 +1,11 @@
-
+/* global CanvasRenderingContext2D */
 import Context from './context'
 
-export class Renderer extends Context {
+export default class Renderer extends Context {
   
   constructor() {
     super();
-    let canvas = document.createElement("canvas")
-
-    this.canvas = canvas
-    this.context = canvas.getContext("2d")
+    this.isOffscreenCanvas = true
   }
   
   // Adds the canvas to the target element
@@ -20,6 +17,7 @@ export class Renderer extends Context {
     }
     
     this.canvas.id = "renderer"
+    this.isOffscreenCanvas = false
     target.appendChild(this.canvas)
     return this;
   }
@@ -38,7 +36,6 @@ export class Renderer extends Context {
     this.closePath();
     return this;
   }
-  
   
   strs(...args) {
     this.save()
@@ -70,6 +67,29 @@ export class Renderer extends Context {
   
   fillWith(color = "#000") {
     return this.strokeStyle(color).stroke()
+  }
+  
+  dimensions() {
+    
+    let width = this.canvas.width
+    let height = this.canvas.height
+    return {x: 0, y: 0, width, height}
+  }
+  
+  draw(target, x = 0, y = 0, width, height) {
+    
+    // only allows drawing on Renderer instances
+    if (!(target instanceof Renderer)) {
+      throw new TypeError("Incorrect argument type. Should be Renderer")
+    }
+    
+    let source = this.dimensions()
+    if (!width)   width = source.width
+    if (!height)  height = source.height
+    
+    let data = this.getImageData(source.x, source.y, source.width, source.height)
+    this.putImageData(data, x, y, width, height)
+    
   }
   
 }
