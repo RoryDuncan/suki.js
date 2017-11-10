@@ -27,6 +27,12 @@ export default class Suki {
     if (!isReady()) document.onreadystatechange = () => isReady()
   }
   
+  ready(fn) {
+    if (this.isReady) fn()
+    else this.events.on("ready", fn)
+    return this
+  }
+  
   start() {
     
     this.running = true
@@ -58,13 +64,15 @@ export default class Suki {
     
     this.time = () => time
     
-    // everything in this function is extremely time-sensitive
+    // everything in this function is extremely performance-sensitive
     // but, it's also where all the magic happens
     const step = e => {
       if (that.running) {
         window.cancelAnimationFrame(time.id)
         return
       }
+      
+      time.ticks += 1
       
       let _now = now()
       
@@ -94,6 +102,8 @@ export default class Suki {
     
     return this
   }
+  
+  
   
 }
 
