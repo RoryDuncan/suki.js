@@ -4,7 +4,7 @@ import Context from './context'
 export default class Renderer extends Context {
   
   constructor() {
-    super();
+    super()
     this.isOffscreenCanvas = true
   }
   
@@ -19,7 +19,7 @@ export default class Renderer extends Context {
     this.canvas.id = "renderer"
     this.isOffscreenCanvas = false
     target.appendChild(this.canvas)
-    return this;
+    return this
   }
   
   // Creates a triangle path 
@@ -33,8 +33,8 @@ export default class Renderer extends Context {
     this.moveTo(point1.x, point1.y)
     this.lineTo(point2.x, point2.y)
     this.lineTo(point3.x, point3.y)
-    this.closePath();
-    return this;
+    this.closePath()
+    return this
   }
   
   strs(...args) {
@@ -45,16 +45,16 @@ export default class Renderer extends Context {
   trs(x = 0, y = 0, rotation = 0, scale = 1) {
     this.translate(x, y)
       .rotate(rotation)
-      .scale(scale, scale);
-    return this;
+      .scale(scale, scale)
+    return this
   }
   
   // Saves, executes all parameter functions, then restores
   do(...actions) {
-    this.save();
+    this.save()
     actions.forEach(action => action())
-    this.restore();
-    return this;
+    this.restore()
+    return this
   } 
   
   clear(color = "#fff") {
@@ -76,8 +76,18 @@ export default class Renderer extends Context {
     return {x: 0, y: 0, width, height}
   }
   
-  resize() {
+  cache() {
+    let {x, y, width, height} = this.dimensions()
+    return this.getImageData(x, y, width, height)
+  }
+  
+  resize(w, h) {
     
+    let data = this.cache()
+    this.canvas.width = w
+    this.canvas.height = h
+    this.putImageData(data, 0, 0, w ,h)
+    return this
   }
   
   draw(target, x = 0, y = 0, width = this.canvas.width, height = this.canvas.height) {
