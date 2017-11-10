@@ -16,5 +16,8 @@
     "url": "https://github.com/RoryDuncan/suki.js/issues"
   },
   "homepage": "https://github.com/RoryDuncan/suki.js#readme",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "rollup": "^0.51.3"
+  }
 }
