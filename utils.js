@@ -9,3 +9,5 @@ export const chain = (wrapper, context = null, fn) => {
     return wrapper
   }
 }
+
+export default {noop, defer, chain}
