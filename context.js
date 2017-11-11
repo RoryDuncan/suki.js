@@ -11,7 +11,7 @@ let chainMethod = function(wrapper, fn, isGetter) {
     return (...args) => fn.apply(wrapper.context, ...args)
   }
   else return (...args) => {
-    fn.apply(wrapper.context, ...args) 
+    fn.apply(wrapper.context, args) 
     return wrapper
   }
 }
