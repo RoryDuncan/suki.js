@@ -79,7 +79,7 @@ let chainMethod = function(wrapper, fn, isGetter) {
     return (...args) => fn.apply(wrapper.context, ...args)
   }
   else return (...args) => {
-    fn.apply(wrapper.context, ...args); 
+    fn.apply(wrapper.context, args); 
     return wrapper
   }
 };
@@ -246,7 +246,9 @@ class Suki {
     this.renderer = new Renderer();
     this.$        = this.renderer;
     this.canvas   = this.renderer.canvas;
-    
+    this.stats    = {
+      skippedFrames: 0,
+    };
     this.renderer.addCanvasToDOM();
     
     // add our hook for watching for if the document is ready
@@ -273,72 +275,91 @@ class Suki {
     return this
   }
   
-  start() {
+  start(fps = 60) {
+    
+    let fpms = 1000/fps;
+    
+    console.log(`Stepping every ${fpms}ms, ${fps} frames per second`);
     
     this.running = true;
+    
     const that = this;
     const now = () => Date.now();
     const start = now();
     
-    // prepare our frameskipping mechanisms
-    const frameSkipping = {
-      skippedFrames: 0,
-      enabled: true,
-      threshold: 120,
-    };
-    
-    const frameSkippingThreshold = frameSkipping.threshold;
-    const skipFrame = (frameSkipping.enabled ? dt => dt > frameSkippingThreshold : dt => false );
+    // if a step takes longer than this we skip the frame
+    //    At 60FPS, this would be 12.5ms to process a 'step'
+    const frameskipDeltaThreshold = fpms * 0.8;
     
     // our time reference, provided to all renders and steps
-    // using a constant reference helps V8 create an optimized class early.
+    // using a constant reference helps V8's JITC create an optimized class early.
     const time = {
-      elapsed:    0,
-      lastCalled: start,
-      now:        start,
-      start:      start,
-      ticks:      0,
-      delta:      null,
-      id:         null,
+      id:           null,
+      now:          start,
+      start:        start,
+      ticks:        0,
+      delta:        null,
+      elapsed:      0,
+      lastCalled:   start,
+      stepDuration: 0,
+      fps:          fps,
     };
+    
+    
+    let _now = 0;
+    let lastRender = start;
+    let lastRenderDelta = 0;
     
     this.time = () => time;
     
     // everything in this function is extremely performance-sensitive
     // but, it's also where all the magic happens
-    const step = e => {
-      if (that.running) {
+    const tick = e => {
+      
+      time.ticks += 1;
+      
+      if (!that.running) {
         window.cancelAnimationFrame(time.id);
         return
       }
       
-      time.ticks += 1;
-      
-      let _now = now();
+      // update time object with the new time and deltas
+      _now = now();
       
       time.now = _now;
       time.delta = (_now - time.lastCalled);
       time.elapsed += time.delta;
+      
+      // perform a step
       that.events.trigger("step", time);
       
-      if (skipFrame(time.delta)) {
+      _now = now();
+      time.stepDuration = _now - time.now;
+      lastRenderDelta = _now - lastRender;
+      
+      if (time.stepDuration > frameskipDeltaThreshold) {
+        console.log("frame skipping");
         that.stats.skippedFrames += 1;
         time.elapsed -= time.delta;
+        time.lastCalled = _now;
       }
       else {
+        
+        lastRender = _now;
         that.events.trigger("pre-render", time, that.renderer, that);
         that.events.trigger("render", time, that.renderer, that);
+        time.lastCalled = _now;
+        that.events.trigger("post-render", time, that.renderer, that);
       }
       
-      time.lastcalled = _now;
-      that.events.trigger("post-render", time, that.renderer, that);
-      time.id = window.requestAnimationFrame(step);
+      time.id = window.requestAnimationFrame(tick);
       
-      return that
+      time.fps = 1000/lastRenderDelta;
+      
     };
     
     // we ride
-    time.id = window.requestAnimationFrame(step);
+    time.id = window.requestAnimationFrame(tick);
     
     return this
   }
@@ -348,5 +369,19 @@ class Suki {
 let suki = new Suki();
 
 console.log(suki);
-suki.ready(() => console.log("ready!"));
-// suki.start()
+suki.ready(() => {
+  console.log("ready!");
+  suki.start();
+});
+
+suki.events.on("step", (time) => {
+  
+});
+
+
+suki.events.on("render", (time, $) => {
+  $.clear("#07c")
+    .fillStyle("#fff")
+    .fillText(`${time.fps.toFixed(0)} fps`, 50, 50)
+    .fillText(`${suki.stats.skippedFrames} frames skipped`, 50, 75);
+});
