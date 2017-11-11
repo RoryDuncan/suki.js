@@ -1,11 +1,11 @@
 
 import EventEmitter from "./events"
 import Renderer from "./renderer"
-import { deferred } from "./utils"
+import { defer } from "./utils"
 
 export default class Suki {
   
-  constructor(options) {
+  constructor() {
     
     const that    = this
     this.running  = false
@@ -17,14 +17,22 @@ export default class Suki {
     
     this.renderer.addCanvasToDOM()
     
-    let triggerReady = deferred(() => {
-      that.isReady = true
-      that.events.trigger("ready")
-      return true
-    })
+    // add our hook for watching for if the document is ready
+    let isReadyCheck = () => {
+      if (document.readyState == "complete") {
+        defer(() => {
+          that.isReady = true
+          that.events.trigger("ready")
+        })
+        return true
+      }
+      else return false
+    }
     
-    let isReady = () => document.readyState == "complete" ? triggerReady() : false
-    if (!isReady()) document.onreadystatechange = () => isReady()
+    if (!isReadyCheck()) {
+      document.onreadystatechange = isReadyCheck
+    }
+    
   }
   
   ready(fn) {
