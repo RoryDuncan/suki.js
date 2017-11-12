@@ -16,6 +16,9 @@ export default class Suki {
     this.canvas   = this.renderer.canvas
     this.stats    = {
       skippedFrames: 0,
+      fps: () => {
+        return 1000/that.time().lastRenderDelta
+      },
     }
     this.renderer.addCanvasToDOM()
     
@@ -45,6 +48,10 @@ export default class Suki {
   
   start(fps = 60) {
     
+    // note that fps is constrained by the browser,
+    // thus it may be more apt to call it a 'render interval'
+    // that said, it does still determine the frameskip threshold,
+    
     let fpms = 1000/fps
     
     console.log(`Stepping every ${fpms}ms, ${fps} frames per second`)
@@ -62,21 +69,20 @@ export default class Suki {
     // our time reference, provided to all renders and steps
     // using a constant reference helps V8's JITC create an optimized class early.
     const time = {
-      id:           null,
-      now:          start,
-      start:        start,
-      ticks:        0,
-      delta:        null,
-      elapsed:      0,
-      lastCalled:   start,
-      stepDuration: 0,
-      fps:          fps,
+      id:               null,
+      now:              start,
+      start:            start,
+      ticks:            0,
+      delta:            null,
+      elapsed:          0,
+      lastCalled:       start,
+      stepDuration:     0,
+      lastRenderDelta:  0,
     }
     
     
     let _now = 0
     let lastRender = start
-    let lastRenderDelta = 0
     
     this.time = () => time
     
@@ -101,12 +107,14 @@ export default class Suki {
       // perform a step
       that.events.trigger("step", time)
       
+      // after a step we measure the time it took to determine if too much processing 
+      // occurred for an immediate render, a la, frame sklpping
       _now = now()
       time.stepDuration = _now - time.now
-      lastRenderDelta = _now - lastRender
+      time.lastRenderDelta = _now - lastRender
       
       if (time.stepDuration > frameskipDeltaThreshold) {
-        console.log("frame skipping")
+        
         that.stats.skippedFrames += 1
         time.elapsed -= time.delta
         time.lastCalled = _now
@@ -121,9 +129,6 @@ export default class Suki {
       }
       
       time.id = window.requestAnimationFrame(tick)
-      
-      time.fps = 1000/lastRenderDelta
-      
     }
     
     // we ride
