@@ -248,6 +248,9 @@ class Suki {
     this.canvas   = this.renderer.canvas;
     this.stats    = {
       skippedFrames: 0,
+      fps: () => {
+        return 1000/that.time().lastRenderDelta
+      },
     };
     this.renderer.addCanvasToDOM();
     
@@ -277,6 +280,10 @@ class Suki {
   
   start(fps = 60) {
     
+    // note that fps is constrained by the browser,
+    // thus it may be more apt to call it a 'render interval'
+    // that said, it does still determine the frameskip threshold,
+    
     let fpms = 1000/fps;
     
     console.log(`Stepping every ${fpms}ms, ${fps} frames per second`);
@@ -294,21 +301,20 @@ class Suki {
     // our time reference, provided to all renders and steps
     // using a constant reference helps V8's JITC create an optimized class early.
     const time = {
-      id:           null,
-      now:          start,
-      start:        start,
-      ticks:        0,
-      delta:        null,
-      elapsed:      0,
-      lastCalled:   start,
-      stepDuration: 0,
-      fps:          fps,
+      id:               null,
+      now:              start,
+      start:            start,
+      ticks:            0,
+      delta:            null,
+      elapsed:          0,
+      lastCalled:       start,
+      stepDuration:     0,
+      lastRenderDelta:  0,
     };
     
     
     let _now = 0;
     let lastRender = start;
-    let lastRenderDelta = 0;
     
     this.time = () => time;
     
@@ -333,12 +339,14 @@ class Suki {
       // perform a step
       that.events.trigger("step", time);
       
+      // after a step we measure the time it took to determine if too much processing 
+      // occurred for an immediate render, a la, frame sklpping
       _now = now();
       time.stepDuration = _now - time.now;
-      lastRenderDelta = _now - lastRender;
+      time.lastRenderDelta = _now - lastRender;
       
       if (time.stepDuration > frameskipDeltaThreshold) {
-        console.log("frame skipping");
+        
         that.stats.skippedFrames += 1;
         time.elapsed -= time.delta;
         time.lastCalled = _now;
@@ -353,9 +361,6 @@ class Suki {
       }
       
       time.id = window.requestAnimationFrame(tick);
-      
-      time.fps = 1000/lastRenderDelta;
-      
     };
     
     // we ride
@@ -382,6 +387,7 @@ suki.events.on("step", (time) => {
 suki.events.on("render", (time, $) => {
   $.clear("#07c")
     .fillStyle("#fff")
-    .fillText(`${time.fps.toFixed(0)} fps`, 50, 50)
-    .fillText(`${suki.stats.skippedFrames} frames skipped`, 50, 75);
+    .fillText(`${time.ticks} ticks`, 50, 20)
+    .fillText(`${suki.stats.fps().toFixed(0)} fps`, 50, 35)
+    .fillText(`${suki.stats.skippedFrames} frames skipped`, 50, 50);
 });
