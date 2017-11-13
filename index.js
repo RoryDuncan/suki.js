@@ -101,6 +101,8 @@ export default class Suki {
         return
       }
       
+      that.events.trigger("tick", time)
+      
       // update time object with the new time and deltas
       _now = now()
       
@@ -145,5 +147,24 @@ export default class Suki {
     this.running = false
   }
   
+  App(superclass = {}) {
+      
+    const suki = this
+      
+    return class SukiAttachedApp extends superclass {
+      
+      constructor() {
+        super()
+        
+      }
+      
+      mount() {
+        
+        if (this.step) suki.on("step", this.step)
+        if (this.render) suki.on("step", this.step)
+      }
+      
+    }
+  }
 }
 
