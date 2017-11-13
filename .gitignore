@@ -59,3 +59,4 @@ typings/
 
 # dist folder, for now
 dist/*
+dev/bundle.js
