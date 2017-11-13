@@ -99,9 +99,11 @@ let chainProperty = function(wrapper, key) {
 // not defined as a class because we programmatically create the prototype below.
 class Context {
   
-  constructor() {
+  constructor(width = 500, height = 500) {
     
     this.canvas = document.createElement("canvas");
+    this.canvas.width = width;
+    this.canvas.height = height;
     let context = this.context = this.canvas.getContext("2d");
   
     // extend the canvas's context
@@ -129,8 +131,8 @@ class Context {
 /* global CanvasRenderingContext2D */
 class Renderer extends Context {
   
-  constructor() {
-    super();
+  constructor(width, height) {
+    super(width, height);
     this.isOffscreenCanvas = true;
     this.imageSmoothingEnabled(false);
   }
@@ -142,7 +144,8 @@ class Renderer extends Context {
     if (!target.appendChild) {
       throw new Error("Renderer.addCanvasToDOM did not recieve a DOM node")
     }
-    
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
     this.canvas.id = "renderer";
     this.isOffscreenCanvas = false;
     target.appendChild(this.canvas);
@@ -278,6 +281,10 @@ class Suki {
     return this
   }
   
+  time() {
+    return null
+  }
+  
   start(fps = 60) {
     
     // note that fps is constrained by the browser,
@@ -329,6 +336,8 @@ class Suki {
         return
       }
       
+      that.events.trigger("tick", time);
+      
       // update time object with the new time and deltas
       _now = now();
       
@@ -369,6 +378,29 @@ class Suki {
     return this
   }
   
+  stop() {
+    this.running = false;
+  }
+  
+  App(superclass = {}) {
+      
+    const suki = this;
+      
+    return class SukiAttachedApp extends superclass {
+      
+      constructor() {
+        super();
+        
+      }
+      
+      mount() {
+        
+        if (this.step) suki.on("step", this.step);
+        if (this.render) suki.on("step", this.step);
+      }
+      
+    }
+  }
 }
 
 let suki = new Suki();
