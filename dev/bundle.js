@@ -278,6 +278,10 @@ class Suki {
     return this
   }
   
+  time() {
+    return null
+  }
+  
   start(fps = 60) {
     
     // note that fps is constrained by the browser,
@@ -367,6 +371,10 @@ class Suki {
     time.id = window.requestAnimationFrame(tick);
     
     return this
+  }
+  
+  stop() {
+    this.running = false;
   }
   
 }
