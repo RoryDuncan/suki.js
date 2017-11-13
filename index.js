@@ -55,10 +55,9 @@ export default class Suki {
     // note that fps is constrained by the browser,
     // thus it may be more apt to call it a 'render interval'
     // that said, it does still determine the frameskip threshold,
-    
     let fpms = 1000/fps
     
-    console.log(`Stepping every ${fpms}ms, ${fps} frames per second`)
+    console.log(`Stepping every ${fpms.toFixed(2)}ms, ${fps} frames per second`)
     
     this.running = true
     
