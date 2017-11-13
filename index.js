@@ -146,7 +146,7 @@ export default class Suki {
     this.running = false
   }
   
-  App(superclass = {}) {
+  App(superclass = Object) {
     
     // sometimes, you just have to admire how beautiful closures are  
     const suki = this
@@ -155,23 +155,24 @@ export default class Suki {
       
       constructor() {
         super()
+        this._ref = suki
       }
       
       mount() {
         
-        if (this.tick)        suki.on("tick",         this.tick)
-        if (this.step)        suki.on("step",         this.step)
-        if (this.preRender)   suki.on("pre-render",   this.preRender)
-        if (this.render)      suki.on("render",       this.render)
-        if (this.postRender)  suki.on("post-render",  this.postRender)
+        if (this.tick)        suki.events.on("tick",         this.tick)
+        if (this.step)        suki.events.on("step",         this.step)
+        if (this.preRender)   suki.events.on("pre-render",   this.preRender)
+        if (this.render)      suki.events.on("render",       this.render)
+        if (this.postRender)  suki.events.on("post-render",  this.postRender)
       }
       
       unmount() {
-        if (this.tick)        suki.off("tick",         this.tick)
-        if (this.step)        suki.off("step",         this.step)
-        if (this.preRender)   suki.off("pre-render",   this.preRender)
-        if (this.render)      suki.off("render",       this.render)
-        if (this.postRender)  suki.off("post-render",  this.postRender)
+        if (this.tick)        suki.events.off("tick",         this.tick)
+        if (this.step)        suki.events.off("step",         this.step)
+        if (this.preRender)   suki.events.off("pre-render",   this.preRender)
+        if (this.render)      suki.events.off("render",       this.render)
+        if (this.postRender)  suki.events.off("post-render",  this.postRender)
       }
       
     }
