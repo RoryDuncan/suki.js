@@ -160,8 +160,19 @@ export default class Suki {
       
       mount() {
         
-        if (this.step) suki.on("step", this.step)
-        if (this.render) suki.on("step", this.step)
+        if (this.tick)        suki.on("tick",         this.tick)
+        if (this.step)        suki.on("step",         this.step)
+        if (this.preRender)   suki.on("pre-render",   this.preRender)
+        if (this.render)      suki.on("render",       this.render)
+        if (this.postRender)  suki.on("post-render",  this.postRender)
+      }
+      
+      unmount() {
+        if (this.tick)        suki.off("tick",         this.tick)
+        if (this.step)        suki.off("step",         this.step)
+        if (this.preRender)   suki.off("pre-render",   this.preRender)
+        if (this.render)      suki.off("render",       this.render)
+        if (this.postRender)  suki.off("post-render",  this.postRender)
       }
       
     }
