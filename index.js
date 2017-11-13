@@ -148,14 +148,14 @@ export default class Suki {
   }
   
   App(superclass = {}) {
-      
+    
+    // sometimes, you just have to admire how beautiful closures are  
     const suki = this
-      
+    
     return class SukiAttachedApp extends superclass {
       
       constructor() {
         super()
-        
       }
       
       mount() {
