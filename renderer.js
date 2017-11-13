@@ -3,8 +3,8 @@ import Context from './context'
 
 export default class Renderer extends Context {
   
-  constructor() {
-    super()
+  constructor(width, height) {
+    super(width, height)
     this.isOffscreenCanvas = true
     this.imageSmoothingEnabled(false)
   }
@@ -16,7 +16,8 @@ export default class Renderer extends Context {
     if (!target.appendChild) {
       throw new Error("Renderer.addCanvasToDOM did not recieve a DOM node")
     }
-    
+    this.canvas.width = window.innerWidth
+    this.canvas.height = window.innerHeight
     this.canvas.id = "renderer"
     this.isOffscreenCanvas = false
     target.appendChild(this.canvas)

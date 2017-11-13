@@ -31,9 +31,11 @@ let chainProperty = function(wrapper, key) {
 // not defined as a class because we programmatically create the prototype below.
 export default class Context {
   
-  constructor() {
+  constructor(width = 500, height = 500) {
     
     this.canvas = document.createElement("canvas")
+    this.canvas.width = width
+    this.canvas.height = height
     let context = this.context = this.canvas.getContext("2d")
   
     // extend the canvas's context
