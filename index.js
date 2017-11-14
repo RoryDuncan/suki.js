@@ -40,7 +40,7 @@ export default class Suki {
     
   }
   
-  ready(fn) {
+  whenReady(fn) {
     if (this.isReady) fn()
     else this.events.on("ready", fn)
     return this
