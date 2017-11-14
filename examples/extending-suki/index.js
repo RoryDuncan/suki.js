@@ -25,7 +25,7 @@ class Thing extends suki.App() {
   }
 }
 
-suki.ready(() => {
+suki.whenReady(() => {
   let thing = new Thing()
   thing.mount()
   console.log(thing)
