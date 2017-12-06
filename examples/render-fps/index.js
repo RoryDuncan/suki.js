@@ -1,4 +1,4 @@
-import Suki from "../index"
+import Suki from "../../index"
 
 let suki = new Suki()
 
