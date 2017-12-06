@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
+    "build:examples": "node examples/build-examples.js",
     "dev": "rollup dev/index.js -o dev/bundle.js -f cjs -w"
   },
   "repository": {
