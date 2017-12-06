@@ -12,14 +12,11 @@ var folders = contents
   .map(a => {
     return {
       name: a,
-      path: [basePath, a, "index.js"].join("/"),
+      input: [basePath, a, "index.js"].join("/"),
+      output: [basePath, a, "bundle.js"].join("/"),
     }
   })
 
-const outputOptions = {
-  file: "bundle.js",
-  format: 'umd',
-}
 
 
 
@@ -27,18 +24,21 @@ const outputOptions = {
 
 const build = async function (item) {
   
-  console.log(`\t Creating bundle for ${item.name} -> (${item.path})`)
+  
+  console.log(`\t Creating bundle for ${item.name} -> (${item.input})`)
   
   // create a bundle
   const bundle = await rollup.rollup({
-    input: item.path,
+    input: item.input,
   })
-  
 
   // write the bundle to disk
-  await bundle.write(outputOptions)
+  await bundle.write({
+    file: item.output,
+    format: 'umd',
+  })
   
-  console.log(`\t ${item.name} bundled!`)
+  console.log(`\t Bundled ${item.name} as ${item.output}`)
 }
 
 var promises = folders.map(a => new Promise(resolve => resolve(build(a))))
