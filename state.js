@@ -2,7 +2,6 @@ import SubSystem from "./index"
 
 export class StateManager {
   
-  
   constructor(suki){
     this.states = {}
     this.suki = suki || null
@@ -62,7 +61,7 @@ export class StateManager {
 
 
 
-export class State extends SubSystem() {
+export default class State extends SubSystem() {
   
   constructor(name, isAsync = false) {
     
