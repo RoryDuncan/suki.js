@@ -1,4 +1,8 @@
-'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(factory());
+}(this, (function () { 'use strict';
 
 const errorMessage = (method, item) => `EventEmitter.${method} is missing ${item}.`;
 const isNullOrUndefined = (val) => val == null || typeof val == "undefined";
@@ -275,7 +279,7 @@ class Suki {
     
   }
   
-  ready(fn) {
+  whenReady(fn) {
     if (this.isReady) fn();
     else this.events.on("ready", fn);
     return this
@@ -290,10 +294,9 @@ class Suki {
     // note that fps is constrained by the browser,
     // thus it may be more apt to call it a 'render interval'
     // that said, it does still determine the frameskip threshold,
-    
     let fpms = 1000/fps;
     
-    console.log(`Stepping every ${fpms}ms, ${fps} frames per second`);
+    console.log(`Stepping every ${fpms.toFixed(2)}ms, ${fps} frames per second`);
     
     this.running = true;
     
@@ -382,31 +385,12 @@ class Suki {
     this.running = false;
   }
   
-  App(superclass = {}) {
-      
-    const suki = this;
-      
-    return class SukiAttachedApp extends superclass {
-      
-      constructor() {
-        super();
-        
-      }
-      
-      mount() {
-        
-        if (this.step) suki.on("step", this.step);
-        if (this.render) suki.on("step", this.step);
-      }
-      
-    }
-  }
 }
 
 let suki = new Suki();
 
 console.log(suki);
-suki.ready(() => {
+suki.whenReady(() => {
   console.log("ready!");
   suki.start();
 });
@@ -423,3 +407,5 @@ suki.events.on("render", (time, $) => {
     .fillText(`${suki.stats.fps().toFixed(0)} fps`, 50, 35)
     .fillText(`${suki.stats.skippedFrames} frames skipped`, 50, 50);
 });
+
+})));

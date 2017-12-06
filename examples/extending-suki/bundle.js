@@ -1,4 +1,8 @@
-'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(factory());
+}(this, (function () { 'use strict';
 
 const errorMessage = (method, item) => `EventEmitter.${method} is missing ${item}.`;
 const isNullOrUndefined = (val) => val == null || typeof val == "undefined";
@@ -275,7 +279,7 @@ class Suki {
     
   }
   
-  ready(fn) {
+  whenReady(fn) {
     if (this.isReady) fn();
     else this.events.on("ready", fn);
     return this
@@ -381,37 +385,6 @@ class Suki {
     this.running = false;
   }
   
-  App(superclass = Object) {
-    
-    // sometimes, you just have to admire how beautiful closures are  
-    const suki = this;
-    
-    return class SukiAttachedApp extends superclass {
-      
-      constructor() {
-        super();
-        this._ref = suki;
-      }
-      
-      mount() {
-        
-        if (this.tick)        suki.events.on("tick",         this.tick);
-        if (this.step)        suki.events.on("step",         this.step);
-        if (this.preRender)   suki.events.on("pre-render",   this.preRender);
-        if (this.render)      suki.events.on("render",       this.render);
-        if (this.postRender)  suki.events.on("post-render",  this.postRender);
-      }
-      
-      unmount() {
-        if (this.tick)        suki.events.off("tick",         this.tick);
-        if (this.step)        suki.events.off("step",         this.step);
-        if (this.preRender)   suki.events.off("pre-render",   this.preRender);
-        if (this.render)      suki.events.off("render",       this.render);
-        if (this.postRender)  suki.events.off("post-render",  this.postRender);
-      }
-      
-    }
-  }
 }
 
 let suki = new Suki();
@@ -439,10 +412,12 @@ class Thing extends suki.App() {
   }
 }
 
-suki.ready(() => {
+suki.whenReady(() => {
   let thing = new Thing();
   thing.mount();
   console.log(thing);
   console.log("ready!");
   suki.start();
 });
+
+})));
