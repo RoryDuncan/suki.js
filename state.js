@@ -2,9 +2,27 @@ import SubSystem from "./index"
 
 export class StateManager {
   
-  constructor(suki){
+  constructor(suki) {
     this.states = {}
-    this.suki = suki || null
+    if (suki) this.ref = suki
+  }
+  
+  
+  get current() {
+    return this.current || null
+  }
+  
+  set current(value) {
+    this.current = value
+  }
+  
+  
+  set ref(value) {
+    this.suki = value
+  }
+  
+  get ref() {
+    return this.suki || null
   }
   
   
@@ -15,8 +33,8 @@ export class StateManager {
   
   
   async setState(name, state) {
-    this.add(name, state);
-    this.change(name);
+    this.add(name, state)
+    this.change(name)
   }
   
   
@@ -44,21 +62,12 @@ export class StateManager {
       }
       
       state.enter()
-      state.mount(this.suki)
+      state.mount(this.ref)
     }
   }
-  
-  
-  get current() {
-    return this.current || null
-  }
-  
-  set current(value) {
-    this.current = value
-  }
-  
 }
 
+export const gamestate = new StateManager()
 
 
 export default class State extends SubSystem() {
