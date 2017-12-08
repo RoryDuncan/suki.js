@@ -72,13 +72,17 @@ export const gamestate = new StateManager()
 
 export default class State extends SubSystem() {
   
-  constructor(name, isAsync = false) {
+  constructor(state) {
     
-    if (!name) throw new Error("A name is required for a State");
-    this.name = name
-    this.isAsync = isAsync
+    this.isAsync = false
     this.ready = false
-    this.store = null
+    
+    if (!state.name) throw new Error("A name is required for a State")
+    
+    for (let key in state) {
+      this[key] = state[key]
+    }
+  
   }
   
   enter(){}
@@ -93,4 +97,5 @@ export default class State extends SubSystem() {
   preRender() {}
   render() {}
   postRender() {}
+  
 }
