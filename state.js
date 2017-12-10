@@ -26,21 +26,25 @@ export class StateManager {
   }
   
   
-  add(name, state) {
+  add(state) {
     let name = state.name
     this.states[name] = state
   }
   
   
-  async setState(name, state) {
-    this.add(name, state)
-    this.change(name)
+  setState(state) {
+    this.add(state)
+    this.change(state.name)
   }
   
   
+  changeByRef(state) {
+    this.change(state.name)
+  }
+  
   async change(name) {
     
-    let state = this.states[name]
+    let state = this.states[name] || null
     
     if (state !== null) {
        
