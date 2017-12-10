@@ -1,30 +1,13 @@
-import SubSystem from "./index"
+import { SubSystem } from "./index"
 
 export class StateManager {
   
   constructor(suki) {
     this.states = {}
-    if (suki) this.ref = suki
+    this.ref = null 
+    this.current = null
+    if (suki) this.current = suki
   }
-  
-  
-  get current() {
-    return this.current || null
-  }
-  
-  set current(value) {
-    this.current = value
-  }
-  
-  
-  set ref(value) {
-    this.suki = value
-  }
-  
-  get ref() {
-    return this.suki || null
-  }
-  
   
   add(state) {
     let name = state.name
@@ -74,10 +57,10 @@ export class StateManager {
 export const gamestate = new StateManager()
 
 
-export default class State extends SubSystem() {
+export class State extends SubSystem() {
   
   constructor(state) {
-    
+    super()
     this.isAsync = false
     this.ready = false
     
