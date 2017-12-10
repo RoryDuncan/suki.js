@@ -151,6 +151,7 @@ export default class Suki {
 
 
 export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends superclass {
+  
   constructor() {
     super()
     this._suki = null
