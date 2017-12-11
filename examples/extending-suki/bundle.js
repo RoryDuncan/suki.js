@@ -55,7 +55,7 @@ class EventEmitter {
     if (this._allowed[event] === false) return this;
     
     let events = this._events[event] || [];
-    events.forEach(e => e.fn(...data));
+    events.forEach((e) => e.fn(...data, e.data || null));
     
     return this;
   }

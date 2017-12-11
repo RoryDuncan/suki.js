@@ -24,15 +24,18 @@ const titleState = new State({
   
   name: "title-screen",
   
-  render: (time, $, suki) => {
+  data: {
+    message: "Blue State"
+  },
+  
+  render: (time, $, suki, data) => {
+    
     $.clear("#07c")
       .fillStyle("#fff")
       .font("15px Arial")
-      
-      
-      $.fillText("Blue State", 100, 150)
-      $.fillText("Click to change to toggle current state", 100, 175)
-      $.fillText(`Changing to this state took ${stateChangeDuration}ms`, 100, 190)
+      .fillText(data.message, 100, 150)
+      .fillText("Click to change to toggle current state", 100, 175)
+      .fillText(`Changing to this state took ${stateChangeDuration}ms`, 100, 190)
   }
 })
 
@@ -40,14 +43,18 @@ const playState = new State({
   
   name: "play-game",
   
-  render: (time, $, suki) => {
+  data: {
+    message: "Maroon State"
+  },
+  
+  render: (time, $, suki, data) => {
+      
     $.clear("#707")
       .fillStyle("#fff")
       .font("15px Arial")
-      
-      $.fillText("Maroon State", 100, 150)
-      $.fillText("Click to change to toggle current state", 100, 175)
-      $.fillText(`Changing to this state took ${stateChangeDuration}ms`, 100, 190)
+      .fillText(data.message, 100, 150)
+      .fillText("Click to change to toggle current state", 100, 175)
+      .fillText(`Changing to this state took ${stateChangeDuration}ms`, 100, 190)
       
   }
 })
