@@ -155,6 +155,7 @@ export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends
   constructor() {
     super()
     this._suki = null
+    this.data = null
   }
   
   mount(suki) {
@@ -162,21 +163,21 @@ export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends
     suki = this._suki = suki || this._suki
     if (!this._suki) throw new Error("Suki Instance missing from SubSystem")
     
-    if (this.tick)        suki.events.on("tick",         this.tick)
-    if (this.step)        suki.events.on("step",         this.step)
-    if (this.preRender)   suki.events.on("pre-render",   this.preRender)
-    if (this.render)      suki.events.on("render",       this.render)
-    if (this.postRender)  suki.events.on("post-render",  this.postRender)
+    if (this.tick)        suki.events.on("tick",         this.tick,         this.data)
+    if (this.step)        suki.events.on("step",         this.step,         this.data)
+    if (this.preRender)   suki.events.on("pre-render",   this.preRender,    this.data)
+    if (this.render)      suki.events.on("render",       this.render,       this.data)
+    if (this.postRender)  suki.events.on("post-render",  this.postRender,   this.data)
   }
   
   unmount() {
     
     let suki = this._suki
     
-    if (this.tick)        suki.events.off("tick",         this.tick)
-    if (this.step)        suki.events.off("step",         this.step)
-    if (this.preRender)   suki.events.off("pre-render",   this.preRender)
-    if (this.render)      suki.events.off("render",       this.render)
-    if (this.postRender)  suki.events.off("post-render",  this.postRender)
+    if (this.tick)        suki.events.off("tick",         this.tick,         this.data)
+    if (this.step)        suki.events.off("step",         this.step,         this.data)
+    if (this.preRender)   suki.events.off("pre-render",   this.preRender,    this.data)
+    if (this.render)      suki.events.off("render",       this.render,       this.data)
+    if (this.postRender)  suki.events.off("post-render",  this.postRender,   this.data)
   }  
 }
