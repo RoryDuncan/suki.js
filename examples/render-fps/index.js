@@ -8,10 +8,6 @@ suki.whenReady(() => {
   suki.start()
 })
 
-suki.events.on("step", (time) => {
-  
-})
-
 
 suki.events.on("render", (time, $) => {
   $.clear("#07c")
