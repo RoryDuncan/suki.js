@@ -4,7 +4,7 @@ import Renderer from "./renderer"
 import { defer } from "./utils"
 
 // internal reference used by our sub-systems
-const suki = null
+let suki = null
 
 export default class Suki {
   

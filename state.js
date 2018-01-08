@@ -6,7 +6,11 @@ export class StateManager {
     this.states = {}
     this.ref = null 
     this.current = null
-    if (suki) this.current = suki
+  }
+  
+  
+  mount(suki) {
+    this.ref = suki
   }
   
   add(state) {
