@@ -38,7 +38,6 @@ const state = new State({
       .fillStyle("#fff")
       .font("15px Arial")
       .fillText(data.message, 100, 150)
-      .fillText("Click to change to toggle current state", 100, 175)
       .fillStyle("#fff")
       .fillRect(square.x, square.y, square.w, square.h)
   }
@@ -50,11 +49,15 @@ gamestate.change(state.name)
 
 document.addEventListener("click", (e) => {
   
-  let [x, y] = [e.x, e.y]
+  let [x, y] = [e.x - 25, e.y - 25]
   let tween = gamestate.tween
   
   if (tween == null) {
     tween = new Tween()  
+    tween.on("complete", () => {
+      square.w = 50;
+      square.h = 50;
+    })
   }
   
   console.log(`clicked ${x}, ${y}`)
@@ -62,9 +65,12 @@ document.addEventListener("click", (e) => {
   
   tween.stop()
   tween.from(square)
-  tween.to({x, y})
-  tween.for(1, "linear")
+  tween.to({x, y, w: 20, h: 20 })
+  tween.for(0.5, "outBounce")
   tween.start()
+  
+  
+  console.log(tween)
   
 })
 
