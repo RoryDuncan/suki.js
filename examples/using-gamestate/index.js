@@ -8,12 +8,8 @@ import { gamestate, State } from "../../state"
 //    though it's not of real value and we don't expect it to be non-performant
 //
 
-
 let suki = new Suki()
 
-// set a reference to suki for all of our gamestates to utilize
-// required!
-gamestate.ref = suki
 
 
 var stateChangeDuration = 0.00
