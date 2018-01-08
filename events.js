@@ -55,6 +55,16 @@ export default class EventEmitter {
     return this;
   }
   
+  once(event, fn, data) {
+    
+    let _fn = (...data) => {
+      this.off(event, _fn)
+      fn(...data, data || null)
+    }
+    
+    this.on(event, _fn, data)
+  }
+  
   enable(event) {
     this._allowed[event] = true;
     return this;
