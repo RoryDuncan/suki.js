@@ -12,10 +12,11 @@ export class TweenManager extends SubSystem() {
     super()
     this.tweens = []
     this.ID = 0
+    this.step = this.step.bind(this)
   }
   
   add(tween) {
-    if (!this.tweens.includes(tween)) return;
+    if (this.tweens.includes(tween)) return;
     tween.ID = this.ID
     this.ID++
     this.tweens.push(tween)
@@ -37,7 +38,7 @@ export class TweenManager extends SubSystem() {
 // the manager expected to normally interact with
 export const manager = new TweenManager()
 
-export default class Tween extends EventEmitter {
+export class Tween extends EventEmitter {
   
   constructor(from, to) {
     super()
@@ -55,10 +56,10 @@ export default class Tween extends EventEmitter {
       loop:     false,
       easing:   "linear",
       elapsed:  0,
-      duration: 1.0,
+      duration: 1,
     }
     
-    this.change = {}
+    this.changes = {}
     
     manager.add(this)
     
@@ -75,12 +76,12 @@ export default class Tween extends EventEmitter {
   }
   
   for(duration, easing = "linear") {
-    this.time.duration = duration
+    this.time.duration = duration * 1000
     this.data.easing = easing
   }
   
   isReady() {
-    return this.data.from !== null && this.data.to !== null
+    return this.data.origin !== null && this.data.to !== null
   }
   
   start() {
@@ -123,13 +124,14 @@ export default class Tween extends EventEmitter {
     
     // todo: input 'progress' to our easing function
     let modifier = progress
+    let origin = this.data.origin
     
     // proceed through our animation / tween for each key
-    for (let key in this.data.change) {
+    for (let key in this.changes) {
       let before = this.data.from[key]
-      let change = this.data.change[key]
+      let change = this.changes[key]
       
-      this.data.origin[key] = before + change * modifier
+      origin[key] = before + (change * modifier)
     }
     
     // completion check
@@ -145,6 +147,15 @@ export default class Tween extends EventEmitter {
       }
       
     }
+  }
+  
+  stop() {
+    this.animating = false
+  }
+  
+  remove() {
+    this.stop()
+    manager.remove(this)
   }
   
 }
