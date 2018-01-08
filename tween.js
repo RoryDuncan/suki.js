@@ -68,16 +68,19 @@ export class Tween extends EventEmitter {
   from(origin) {
     this.data.origin = origin
     if (!origin) console.error("Tween.from expects an argument.")
+    return this
   }
   
   to(target) {
     this.data.to = target
     if (!target) console.error("Tween.to expects an argument.")
+    return this
   }
   
   for(duration, easing = "linear") {
     this.time.duration = duration * 1000
     this.time.easing = easing
+    return this
   }
   
   isReady() {
@@ -111,11 +114,12 @@ export class Tween extends EventEmitter {
       
       this.animating = true
     
-    return this;
+    return this
   }
   
   reset() {
     this.start()
+    return this
   }
   
   step(time) {
@@ -153,11 +157,13 @@ export class Tween extends EventEmitter {
   
   stop() {
     this.animating = false
+    return this
   }
   
   remove() {
     this.stop()
     manager.remove(this)
+    return this
   }
   
 }
