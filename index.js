@@ -3,6 +3,9 @@ import EventEmitter from "./events"
 import Renderer from "./renderer"
 import { defer } from "./utils"
 
+// internal reference used by our sub-systems
+const suki = null
+
 export default class Suki {
   
   constructor() {
@@ -37,6 +40,8 @@ export default class Suki {
     if (!isReadyCheck()) {
       document.onreadystatechange = isReadyCheck
     }
+    
+    suki = this
     
   }
   
@@ -155,14 +160,12 @@ export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends
   
   constructor() {
     super()
-    this._suki = null
     this.data = null
   }
   
-  mount(suki) {
+  mount() {
     
-    suki = this._suki = suki || this._suki
-    if (!this._suki) throw new Error("Suki Instance missing from SubSystem")
+    if (suki == null) throw new Error("Suki Instance missing from SubSystem")
     
     if (this.tick)        suki.events.on("tick",         this.tick,         this.data)
     if (this.step)        suki.events.on("step",         this.step,         this.data)
@@ -172,8 +175,6 @@ export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends
   }
   
   unmount() {
-    
-    let suki = this._suki
     
     if (this.tick)        suki.events.off("tick",         this.tick,         this.data)
     if (this.step)        suki.events.off("step",         this.step,         this.data)
