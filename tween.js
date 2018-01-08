@@ -1,6 +1,6 @@
 import EventEmitter from "./events"
 import { SubSystem } from "./index"
-// todo: import easings
+import ease from "./ease"
 // todo: use easings to properly affect our modifier inside of Tween::step
 
 const bounded = (value, min, max) => Math.min(max, Math.max(min, value))
@@ -77,7 +77,7 @@ export class Tween extends EventEmitter {
   
   for(duration, easing = "linear") {
     this.time.duration = duration * 1000
-    this.data.easing = easing
+    this.time.easing = easing
   }
   
   isReady() {
@@ -123,7 +123,7 @@ export class Tween extends EventEmitter {
     let progress = bounded(this.time.elapsed / this.time.duration, 0, 1)
     
     // todo: input 'progress' to our easing function
-    let modifier = progress
+    let modifier = ease(this.time.easing, progress)
     let origin = this.data.origin
     
     // proceed through our animation / tween for each key
