@@ -96,7 +96,8 @@ export default class Suki {
       time.ticks += 1
       
       if (!that.running) {
-        window.cancelAnimationFrame(time.id)
+        if (time.id != null) window.cancelAnimationFrame(time.id)
+        time.id = null
         return
       }
       
