@@ -52,23 +52,30 @@ document.addEventListener("click", (e) => {
   let [x, y] = [e.x - 25, e.y - 25]
   let tween = gamestate.tween
   
+  // we re-use a single tween instance for this example
   if (tween == null) {
-    tween = new Tween()  
-    tween.on("complete", () => {
-      square.w = 50;
-      square.h = 50;
-    })
+    tween = new Tween()
   }
   
-  console.log(`clicked ${x}, ${y}`)
-  
-  
+  // stop the tween's state
   tween.stop()
+  
+  // set it's origin again
   tween.from(square)
+  
+  // set the new target location to be the click
   tween.to({x, y, w: 20, h: 20 })
-  tween.for(0.5, "outBounce")
+  tween.for(1, "outBounce")
   tween.start()
   
+  // an additional little pop!
+  tween.once("complete", () => {
+    tween.stop()
+    tween.from(square)
+    tween.to({ w: 50, h: 50, })
+    tween.for(0.25, "outElastic")
+    tween.start()
+  })
   
   console.log(tween)
   
