@@ -85,14 +85,20 @@ export class Tween extends EventEmitter {
   }
   
   start() {
-    let isReady = this.isReady()
-    if (isReady) {
-      this.time.elapsed = 0
+    
+    if (!this.isReady()) {
+      console.warn("Tween can't be started yet. Not enough data.")
+      return false
+    }
       
-      let origin  = this.data.origin
-      let from    = this.data.from 
-                  = {}
-      let to      = this.data.to
+      this.time.elapsed = 0
+      this.complete = false
+      this.changes  = {}
+      
+      let origin    = this.data.origin
+      let from      = this.data.from 
+                    = {}
+      let to        = this.data.to
       
       for (let key in to) {
         
@@ -104,11 +110,8 @@ export class Tween extends EventEmitter {
       } 
       
       this.animating = true
-    }
-    else {
-      console.warn("Tween can't be started yet. Not enough data.")
-    }
-    return isReady
+    
+    return this;
   }
   
   reset() {
@@ -117,7 +120,7 @@ export class Tween extends EventEmitter {
   
   step(time) {
     
-    if (!this.animating) return
+    if (!this.animating) return;
     
     this.time.elapsed += time.delta
     let progress = bounded(this.time.elapsed / this.time.duration, 0, 1)
@@ -135,17 +138,16 @@ export class Tween extends EventEmitter {
     }
     
     // completion check
-    if (progress >= 1) {
+    if (progress >= 1 && !this.complete) {
       
       if (this.time.loop) {
-        this.elapsed = 0
+        this.time.elapsed = 0
       }
       else {
         this.animating = false
         this.complete = true
         this.trigger("complete")
       }
-      
     }
   }
   
