@@ -43,48 +43,36 @@ export class Tween extends EventEmitter {
   constructor(from, to) {
     super()
     
-    this.animating  = false
+    this.loop       = false
     this.complete   = false
+    this.animating  = false
     
     this.data = {
-      origin:   null, // the source object which is updated
-      from:     null, // copy of source object
-      to:       null, // the target object with values
+      // the current action's index
+      index:    0,
+      // the source / context. it is updated with real values on each step
+      context:   null,
+      // the list of target object with their values
+      actions:  [],
     }
-    
-    this.time = {
-      loop:     false,
-      easing:   "linear",
-      elapsed:  0,
-      duration: 1,
-    }
-    
-    this.changes = {}
     
     manager.add(this)
     
   }
   
-  from(origin) {
-    this.data.origin = origin
-    if (!origin) console.error("Tween.from expects an argument.")
+  from(context) {
+    this.data.context = context || null
     return this
   }
   
-  to(target) {
-    this.data.to = target
-    if (!target) console.error("Tween.to expects an argument.")
-    return this
-  }
-  
-  for(duration, easing = "linear") {
-    this.time.duration = duration * 1000
-    this.time.easing = easing
+  to(target, duration = 1, easing = "inOutQuad", elapsed = 0) {
+    let tweenData = new TweenData(target, duration * 1000, easing, elapsed)
+    this.data.actions.push(tweenData)
     return this
   }
   
   isReady() {
-    return this.data.origin !== null && this.data.to !== null
+    return this.data.context !== null && this.data.actions.length != 0
   }
   
   start() {
@@ -93,28 +81,27 @@ export class Tween extends EventEmitter {
       console.warn("Tween can't be started yet. Not enough data.")
       return false
     }
-      
-      this.time.elapsed = 0
-      this.complete = false
-      this.changes  = {}
-      
-      let origin    = this.data.origin
-      let from      = this.data.from 
-                    = {}
-      let to        = this.data.to
-      
-      for (let key in to) {
-        
-        // we copy the properties so that we have a snapshot of the 'before', or starting, state
-        let start = from[key] = origin[key] || 0
-        
-        // change is a delta of the value found in both 'to', and 'from'
-        this.changes[key] = to[key] - start
-      } 
-      
-      this.animating = true
+      this.data.index = -1
+      this.complete   = false
+      this.next()
+      this.animating  = true
     
     return this
+  }
+  
+  next() {
+    
+    this.data.index++
+    
+    if (this.data.actions.length == this.data.index) {
+      this.animating  = false
+      this.complete   = true
+      this.trigger("complete")
+    }
+    else {
+      let action = this.data.actions[this.data.index]
+      action.prepare(this.data.context)
+    }
   }
   
   reset() {
@@ -124,33 +111,36 @@ export class Tween extends EventEmitter {
   
   step(time) {
     
-    if (!this.animating) return;
+    if (!this.animating) return
     
-    this.time.elapsed += time.delta
-    let progress = bounded(this.time.elapsed / this.time.duration, 0, 1)
+    let action = this.data.actions[this.data.index]
     
-    // todo: input 'progress' to our easing function
-    let modifier = ease(this.time.easing, progress)
-    let origin = this.data.origin
+    action.elapsed += time.delta
+    
+    let progress  = bounded(action.elapsed / action.duration, 0, 1)
+    let modifier  = ease(action.easing, progress)
+    let context   = this.data.context
     
     // proceed through our animation / tween for each key
-    for (let key in this.changes) {
-      let before = this.data.from[key]
-      let change = this.changes[key]
+    // calculating the change occuring in that step
+    for (let key in action.changes) {
       
-      origin[key] = before + (change * modifier)
+      let before = action.from[key]
+      let change = action.changes[key]
+      
+      context[key] = before + (change * modifier)
     }
     
     // completion check
     if (progress >= 1 && !this.complete) {
       
-      if (this.time.loop) {
-        this.time.elapsed = 0
+      this.trigger("action-complete")
+      
+      if (this.loop) {
+        action.elapsed = 0
       }
       else {
-        this.animating = false
-        this.complete = true
-        this.trigger("complete")
+        this.next()
       }
     }
   }
@@ -160,10 +150,52 @@ export class Tween extends EventEmitter {
     return this
   }
   
-  remove() {
-    this.stop()
-    manager.remove(this)
+  resume() {
+    this.animating = true
     return this
   }
   
+  clear() {
+    this.complete     = false
+    this.animating    = false
+    this.data.index   = 0
+    this.data.actions = []
+    return this
+  }
+  
+  remove() {
+    this.clear()
+    manager.remove(this)
+    return this
+  }
+}
+
+export class TweenData {
+  
+  constructor(to, duration, easing, elapsed) {
+    
+    this.to       = to
+    this.duration = duration
+    this.easing   = easing
+    this.elapsed  = elapsed
+    this.from     = null
+    this.changes  = null
+  }
+  
+  prepare(context) {
+    
+    if (this.from != null && this.changes != null) return;
+    
+    this.from     = {}
+    this.changes  = {}
+    
+    for (let key in this.to) {
+      
+      let start = this.from[key] = context[key] || 0
+      
+      // change is a delta of the value found in both 'to', and 'from'
+      this.changes[key] = this.to[key] - start
+    }
+    return this;
+  }
 }
