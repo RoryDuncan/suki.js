@@ -57,25 +57,14 @@ document.addEventListener("click", (e) => {
     tween = new Tween()
   }
   
-  // stop the tween's state
   tween.stop()
-  
   // set it's origin again
   tween.from(square)
   
   // set the new target location to be the click
-  tween.to({x, y, w: 20, h: 20 })
-  tween.for(1, "outBounce")
+  tween.to({x, y, w: 20, h: 20 }, 1, "outBounce")
+  tween.to({ w: 50, h: 50, }, 0.25, "outElastic")
   tween.start()
-  
-  // an additional little pop!
-  tween.once("complete", () => {
-    tween.stop()
-    tween.from(square)
-    tween.to({ w: 50, h: 50, })
-    tween.for(0.25, "outElastic")
-    tween.start()
-  })
   
   console.log(tween)
   
