@@ -52,7 +52,6 @@ const state = new State({
       case "down":  data.square.y += speedPerTick; break;
     }
     
-    
     $.fillStyle(data.square.color).fillRect(data.square.x, data.square.y, 10, 10)
       
       
