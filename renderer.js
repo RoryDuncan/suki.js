@@ -3,10 +3,10 @@ import Context from './context'
 
 export default class Renderer extends Context {
   
-  constructor(width, height) {
+  constructor(width, height, smoothing = false) {
     super(width, height)
     this.isOffscreenCanvas = true
-    this.imageSmoothingEnabled(false)
+    this.imageSmoothingEnabled(smoothing)
   }
   
   // Adds the canvas to the target element
