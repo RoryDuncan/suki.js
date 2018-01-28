@@ -13,9 +13,6 @@ let suki = new Suki()
 
 manager.mount()
 
-// create a title screen state
-// when inside the title screen state, we render the menu items
-
 let square = {
   x: 50,
   y: 50,
