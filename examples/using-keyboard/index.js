@@ -6,10 +6,10 @@ import keyboard from "../../keyboard"
 /*
     In this example:
     we create a gamestate which renders a square on the screen
-    we then use click events to create a tween that moves the square to the click location
+    We then use the keyboard to move it's position around
+    Additionally, we print out all keys that have been pressed
 */
 
-const hexadecimalKeys = ["a", "b", "c", "d", "e", "f", "0", "1","2","3", "4", "5", "6", "7", "8", "9"]
 let suki = new Suki()
 
 manager.mount()
@@ -20,7 +20,6 @@ const state = new State({
   
   data: {
     message: "Press buttons on your keyboard!",
-    recentHexKeys: ["f", "f", "f"],
     square: {
       x: 150,
       y: 150,
@@ -29,7 +28,7 @@ const state = new State({
   },
   
   enter: () => {
-    // we tell the keyboard to listen for events
+    // begin listening for events
     keyboard.capture()
   },
   
@@ -39,11 +38,14 @@ const state = new State({
       .fillStyle("#fff")
       .font("15px Arial")
       .fillText(data.message, 50, 50)
+      .fillText(`${suki.stats.fps().toFixed(0)} fps`, window.innerWidth - 50, 25)
       .fillStyle("#fff")
       .font("80px Arial")
       // print our all pressed keys
       .fillText(keyboard.pressed.join(" + "), window.innerWidth / 2, 250)
     
+    // move the square in the direction
+    // a more robust solution would accomodate for multiple directions and such
     let speedPerTick = 5
     switch (keyboard.pressed[0]) {
       case "left":  data.square.x -= speedPerTick; break;
