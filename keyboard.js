@@ -76,10 +76,12 @@ export class Keyboard {
     // all of our keycodes that aren't alphabetical characters
     this.keyCodes = keyCodes
     
-    // an array of alkl currently pressed keys
+    // an array of all currently pressed keys
     this.pressed = []
-    
-    // a hash listing if a key is pressed
+    this.defaultAllowed = {
+      "ctrl": true,
+    }
+    // a lookup table for if a key is pressed
     this.keys = []
     
     // bindings
@@ -106,6 +108,8 @@ export class Keyboard {
     return this
   }
   
+  
+  
   handler(e) {
     
     this.pressed = []
@@ -126,10 +130,15 @@ export class Keyboard {
     
     this.keys[key] = pressed
     
+    if (!this.defaultAllowed[key]) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+    
     // add the pressed keys to our list of pressed keys
     for (let k in this.keys) {
       let value = this.keys[k]
-      if (value === true) this.pressed.push(value)
+      if (value === true) this.pressed.push(k)
     }
     
     return this
@@ -143,17 +152,39 @@ export class Keyboard {
   command(keys, exact = false) {
     
     // short-circuit check for exact
-    if (!(exact && (keys.length == this.pressed.length))) {
+    if (exact && (keys.length !== this.pressed.length)) {
       return false
     }
     
-    for (let key in keys) {
-      if (this.keys[key]) continue
+    // check if all of our keys are pressed
+    // short-circuits on failure
+    for (let i = 0, ii = keys.length; i < ii; i++) {
+      if (this.keys[keys[i]]) continue
       else return false
     }
     
     return true
   }
+  
+  any(keys) {
+    return this.identity(keys, true)
+  }
+  
+  not(keys) {
+    return this.identity(keys, false)
+  }
+  
+  only(keys) {
+    return this.command(keys, true)
+  }
+  
+  identity(keys, result) {
+    for (let i = 0, ii = keys.length; i < ii; i++) {
+      if (this.keys[keys[i]]) return result
+    }
+    return !result
+  }
+  
   
 }
 
