@@ -6,9 +6,12 @@ import World from "../../world"
 
 /*
     In this example:
-    we create a gamestate which renders a square on the screen
-    We then use the keyboard to move it's position around
-    Additionally, we print out all keys that have been pressed
+    we create a gamestate which renders a square on the 
+    screen at the world origin (0, 0). 
+    Then, we use keyboard keys to move the origin around.
+  
+    We additionally render the screen coordinates and the 
+    world coordinates in a 4x4 grid
 */
 
 let suki = new Suki()
