@@ -88,7 +88,7 @@ export default class Renderer extends Context {
     let data = this.cache()
     this.canvas.width = w
     this.canvas.height = h
-    this.putImageData(data, 0, 0, w, h)
+    this.putImageData(data, 0, 0)
     return this
   }
   

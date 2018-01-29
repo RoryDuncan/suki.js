@@ -16,11 +16,15 @@
 
 // WorldRenderer contains the methods used on the canvas context (the renderer).
 
-export class WorldRenderer {
+class WorldRenderer {
   
   constructor(renderer) {
     if (!renderer) throw new Error("WorldRender requires a renderer as first argument")
     this.renderer = this.$ = renderer
+  }
+  
+  calc(x, y) {
+    return WorldRenderer.calculate(this, x, y)
   }
   
   static calculate(world, x, y) {
@@ -39,36 +43,41 @@ export class WorldRenderer {
   // refer to MDN for their parameters
   
   translate(x = 0, y = 0) {
-    this.$.apply(this.$, this.calculate(x, y))
+    this.$.apply(this.$, this.calc(x, y))
     return this
   }
   
+  fillText(text, x, y) {
+    let [ calcX, calcY ] = this.calc(x, y)
+    this.$.fillText(text, calcX, calcY)
+  }
+  
   fillRect(x, y, w, h) {
-    let [ calcX, calcY ] = this.calculate(x, y)
+    let [ calcX, calcY ] = this.calc(x, y)
     this.$.fillRect(calcX, calcY, w, h)
     return this
   }
   
   strokeRect(x, y, w, h) {
-    let [ calcX, calcY ] = this.calculate(x, y)
+    let [ calcX, calcY ] = this.calc(x, y)
     this.$.strokeRect(calcX, calcY, w, h)
     return this
   }
   
   moveTo(x, y) {
-    this.$.moveTo.apply(this.$, this.calculate(x, y))
+    this.$.moveTo.apply(this.$, this.calc(x, y))
     return this
   }
   
   lineTo(x, y) {
-    this.$.moveTo.apply(this.$, this.calculate(x, y))
+    this.$.moveTo.apply(this.$, this.calc(x, y))
     return this
   }
   
   quadraticCurveTo(cpx, cpy, x, y) {
     
-    let [ _cpx, _cpy ]  = this.calculate(cpx, cpy)
-    let [ _x, _y ]      = this.calculate(x, y)
+    let [ _cpx, _cpy ]  = this.calc(cpx, cpy)
+    let [ _x, _y ]      = this.calc(x, y)
     
     this.$.quadraticCurveTo(_cpx, _cpy, _x, _y)
     return this
@@ -76,9 +85,9 @@ export class WorldRenderer {
   
   bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
     
-    let [ _cp1x, _cp1y ] = this.calculate(cp1x, cp1y)
-    let [ _cp2x, _cp2y ] = this.calculate(cp2x, cp2y)
-    let [ _x, _y]        = this.calculate(x, y)
+    let [ _cp1x, _cp1y ] = this.calc(cp1x, cp1y)
+    let [ _cp2x, _cp2y ] = this.calc(cp2x, cp2y)
+    let [ _x, _y]        = this.calc(x, y)
     
     this.$.bezierCurveTo(_cp1x, _cp1y, _cp2x, _cp2y, _x, _y)
     return this
@@ -86,8 +95,8 @@ export class WorldRenderer {
   
   arcTo(x1, y1, x2, y2, radius) {
     
-    let [ startX, startY ]  = this.calculate(x1, y1)
-    let [ endX, endY ]      = this.calculate(x2, y2)
+    let [ startX, startY ]  = this.calc(x1, y1)
+    let [ endX, endY ]      = this.calc(x2, y2)
     
     this.$.arcTo(startX, startY, endX, endY, radius)
     return this
@@ -95,7 +104,7 @@ export class WorldRenderer {
   
   rect(x, y, w, h) {
     
-    let [ calcX, calcY ] = this.calculate(x, y)
+    let [ calcX, calcY ] = this.calc(x, y)
     this.$.rect(calcX, calcY, w, h)
     
     return this
@@ -103,7 +112,7 @@ export class WorldRenderer {
   
   arc(x, y, radius, startAngle, endAngle, anticlockwise) {
     
-    let [ _x, _y ] = this.calculate(x, y)
+    let [ _x, _y ] = this.calc(x, y)
     this.$.arc(_x, _y, radius, startAngle, endAngle, anticlockwise)
     
     return this
@@ -112,7 +121,7 @@ export class WorldRenderer {
   
   ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise) {
     
-    let [ _x, _y ] = this.calculate(x, y)
+    let [ _x, _y ] = this.calc(x, y)
     
     this.$.ellipse(_x, _y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)
     return this
@@ -121,7 +130,7 @@ export class WorldRenderer {
   // signature
   //    ImageData ctx.getImageData(sx, sy, sw, sh);
   getImageData(sx, sy, sw, sh) {
-    let [ x, y ] = this.calculate(sx, sy) 
+    let [ x, y ] = this.calc(sx, sy) 
     let imageData = this.$.getImageData(x, y, sw, sh)
     return imageData
   }
@@ -131,7 +140,7 @@ export class WorldRenderer {
   //    void ctx.putImageData(imagedata, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
   putImageData(imageData, dx, dy, dirtyX, dirtyY, dirtyWidth, dirtyHeight) {
     
-    let [ x, y ] = this.calculate(dx, dy)
+    let [ x, y ] = this.calc(dx, dy)
     
     this.$.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight)
     return this
@@ -144,13 +153,13 @@ export class WorldRenderer {
   drawImage(image) {
     
     if (arguments.length === 9) {
-      let [ x, y, ] = this.calculate(arguments[5], arguments[6])
+      let [ x, y, ] = this.calc(arguments[5], arguments[6])
       arguments[5] = x
       arguments[6] = y
       this.$.drawImage.apply(this.$, arguments)
     }
     else {
-      let [ x, y, ] = this.calculate(arguments[3], arguments[4])
+      let [ x, y, ] = this.calc(arguments[3], arguments[4])
       arguments[3] = x
       arguments[4] = y
       this.$.drawImage.apply(this.$, arguments)
@@ -171,7 +180,7 @@ export default class World extends WorldRenderer {
     // determines the directions that positive and negative are
     this.axis = {
       x: 1,
-      y: 1,
+      y: -1,
     }
     
     // a reference for where the offset vector should be calculated from
@@ -191,8 +200,8 @@ export default class World extends WorldRenderer {
       x: 0,
       y: 0,
       z: 0,
-      width: renderer.width,
-      height: renderer.height,
+      width: renderer.canvas.width,
+      height: renderer.canvas.height,
     }
   }
   
@@ -229,14 +238,26 @@ export default class World extends WorldRenderer {
   // pass only an x or a y to move one axis
   move(x = 0, y = 0) {
     
-    let xMagnitude = x * this.orientation.x
-    let yMagnitude = y * this.orientation.y
+    let xMagnitude = x * this.axis.x
+    let yMagnitude = y * this.axis.y
     
     this.view.x += xMagnitude
     this.view.y += yMagnitude
     
     this.offset.x -= xMagnitude
     this.offset.y -= yMagnitude
+    
+  }
+  
+  center(target = {x: 0, y: 0}) {
+    
+    let screen = {
+      x: this.view.width / 2,
+      y: this.view.height / 2,
+    }
+    console.log(this, screen, target)
+    // we set our view on the object minus half the current viewport size
+    this.set(target.x - screen.x, target.y - screen.y)
     
   }
   

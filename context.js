@@ -8,7 +8,7 @@ const valueReturningMethods = [
 
 let chainMethod = function(wrapper, fn, isGetter) {
   if (isGetter) {
-    return (...args) => fn.apply(wrapper.context, ...args)
+    return (...args) => fn.apply(wrapper.context, args)
   }
   else return (...args) => {
     fn.apply(wrapper.context, args) 
