@@ -3,7 +3,7 @@ import Context from './context'
 
 export default class Renderer extends Context {
   
-  constructor(width, height, smoothing = false) {
+  constructor(width, height, scale = 1, smoothing = false) {
     super(width, height)
     this.isOffscreenCanvas = true
     this.imageSmoothingEnabled(smoothing)
@@ -88,7 +88,7 @@ export default class Renderer extends Context {
     let data = this.cache()
     this.canvas.width = w
     this.canvas.height = h
-    this.putImageData(data, 0, 0, w ,h)
+    this.putImageData(data, 0, 0, w, h)
     return this
   }
   
