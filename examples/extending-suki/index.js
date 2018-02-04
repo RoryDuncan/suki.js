@@ -1,6 +1,4 @@
-import Suki  from "../../index"
-
-let suki = new Suki()
+import { suki, SubSystem } from "../../index"
 
 console.log(suki)
 
@@ -13,7 +11,7 @@ console.log(suki)
     tick, step, preRender, render, and postRender
   
   */
-class Thing extends suki.App() {
+class Thing extends SubSystem() {
   
   
   render(time, renderer, ref) {

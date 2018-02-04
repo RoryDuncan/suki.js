@@ -1,4 +1,4 @@
-import Suki from "../../index"
+import { suki } from "../../index"
 import { gamestate, State } from "../../state"
 import { manager, Tween } from "../../tween"
 import keyboard from "../../keyboard"
@@ -13,8 +13,6 @@ import World from "../../world"
     We additionally render the screen coordinates and the 
     world coordinates in a 4x4 grid
 */
-
-let suki = new Suki()
 
 manager.mount()
 const world = new World(suki.renderer)

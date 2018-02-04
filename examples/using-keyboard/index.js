@@ -1,4 +1,4 @@
-import Suki from "../../index"
+import { suki } from "../../index"
 import { gamestate, State } from "../../state"
 import { manager, Tween } from "../../tween"
 import keyboard from "../../keyboard"
@@ -9,8 +9,6 @@ import keyboard from "../../keyboard"
     We then use the keyboard to move it's position around
     Additionally, we print out all keys that have been pressed
 */
-
-let suki = new Suki()
 
 manager.mount()
 

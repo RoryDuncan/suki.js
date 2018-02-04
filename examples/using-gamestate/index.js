@@ -1,4 +1,4 @@
-import Suki from "../../index"
+import { suki } from "../../index"
 import { gamestate, State } from "../../state"
 
 //
@@ -7,10 +7,6 @@ import { gamestate, State } from "../../state"
 // we also measure how long it takes to change states.. 
 //    though it's not of real value and we don't expect it to be non-performant
 //
-
-let suki = new Suki()
-
-
 
 var stateChangeDuration = 0.00
 

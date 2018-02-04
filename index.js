@@ -157,9 +157,7 @@ class Suki {
 /*
    Amazing things seem to be happening!  
 */
-const suki = new Suki()
-export default suki
-
+export const suki = new Suki()
 
 /*
     Subsystem

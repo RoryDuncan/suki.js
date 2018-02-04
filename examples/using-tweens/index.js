@@ -1,4 +1,4 @@
-import Suki from "../../index"
+import { suki } from "../../index"
 import { gamestate, State } from "../../state"
 import { manager, Tween } from "../../tween"
 
@@ -7,9 +7,6 @@ import { manager, Tween } from "../../tween"
     we create a gamestate which renders a square on the screen
     we then use click events to create a tween that moves the square to the click location
 */
-
-
-let suki = new Suki()
 
 manager.mount()
 

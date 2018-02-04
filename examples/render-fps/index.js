@@ -1,6 +1,4 @@
-import Suki from "../../index"
-
-let suki = new Suki()
+import { suki } from "../../index"
 
 console.log(suki)
 suki.whenReady(() => {
