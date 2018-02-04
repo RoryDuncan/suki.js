@@ -3,10 +3,12 @@ import EventEmitter from "./events"
 import Renderer from "./renderer"
 import { defer } from "./utils"
 
-// internal reference used by our sub-systems
-let suki = null
-
-export default class Suki {
+/* 
+    Suki
+    
+    connects our primary renderer, an event emitter, a game loop, and such
+*/
+class Suki {
   
   constructor() {
     
@@ -40,9 +42,6 @@ export default class Suki {
     if (!isReadyCheck()) {
       document.onreadystatechange = isReadyCheck
     }
-    
-    suki = this
-    
   }
   
   whenReady(fn) {
@@ -155,7 +154,18 @@ export default class Suki {
 }
 
 
+/*
+   Amazing things seem to be happening!  
+*/
+const suki = new Suki()
+export default suki
 
+
+/*
+    Subsystem
+
+    Subsystems are how we create modules that hook into the game loop
+*/
 export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends superclass {
   
   constructor() {
@@ -164,9 +174,6 @@ export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends
   }
   
   mount() {
-    
-    if (suki == null) throw new Error("Suki Instance missing from SubSystem")
-    
     if (this.tick)        suki.events.on("tick",         this.tick,         this.data)
     if (this.step)        suki.events.on("step",         this.step,         this.data)
     if (this.preRender)   suki.events.on("pre-render",   this.preRender,    this.data)
