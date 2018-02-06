@@ -159,9 +159,9 @@ class WorldRenderer {
       this.$.drawImage.apply(this.$, arguments)
     }
     else {
-      let [ x, y, ] = this.calc(arguments[3], arguments[4])
-      arguments[3] = x
-      arguments[4] = y
+      let [ x, y, ] = this.calc(arguments[1], arguments[2])
+      arguments[1] = x
+      arguments[2] = y
       this.$.drawImage.apply(this.$, arguments)
     }
     
