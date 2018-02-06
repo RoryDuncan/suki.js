@@ -10,8 +10,6 @@ import keyboard from "../../keyboard"
     Additionally, we print out all keys that have been pressed
 */
 
-manager.mount()
-
 const state = new State({
   
   name: "play-game",

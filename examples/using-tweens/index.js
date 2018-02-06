@@ -8,8 +8,6 @@ import { manager, Tween } from "../../tween"
     we then use click events to create a tween that moves the square to the click location
 */
 
-manager.mount()
-
 let square = {
   x: 50,
   y: 50,

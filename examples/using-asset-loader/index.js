@@ -4,7 +4,7 @@ import { gamestate, State } from "../../state"
 import { manager, Tween } from "../../tween"
 import keyboard from "../../keyboard"
 import World from "../../world"
-import { assets, loader} from "../../asset-loader"
+import { assets, loader } from "../../asset-loader"
 
 /*
     In this example:
@@ -16,7 +16,7 @@ import { assets, loader} from "../../asset-loader"
     Additionally, you can move the map with the keyboard
 */
 
-manager.mount()
+
 const world = new World(suki.renderer)
 world.center()
 
