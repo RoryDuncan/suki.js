@@ -6,6 +6,8 @@ export class StateManager {
     this.states = {}
     this.ref = null 
     this.current = null
+    
+    this.change = this.change.bind(this)
   }
   
   
@@ -31,6 +33,7 @@ export class StateManager {
   
   async change(name) {
     
+    let that = this
     let state = this.states[name] || null
     
     if (state !== null) {
@@ -46,10 +49,9 @@ export class StateManager {
       
       // first time in this state? perform setup:
       if (!state.ready) {
-        // load async things via load()
-        if (state.isAsync) await this.current.load(state)
-        state.ready = true
-        state.init()
+          state.assets = await this.current.load(state).then( a => Promise.resolve(a))
+          state.ready = true
+          state.init()
       }
       
       state.enter()
