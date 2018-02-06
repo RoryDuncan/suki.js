@@ -1,5 +1,6 @@
 import EventEmitter from "./events"
 import { SubSystem } from "./index"
+import { suki } from "./index"
 import ease from "./ease"
 // todo: use easings to properly affect our modifier inside of Tween::step
 
@@ -37,6 +38,7 @@ export class TweenManager extends SubSystem() {
 
 // the manager expected to normally interact with
 export const manager = new TweenManager()
+manager.mount()
 
 export class Tween extends EventEmitter {
   
