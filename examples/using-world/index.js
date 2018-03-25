@@ -7,14 +7,17 @@ import World from "../../world"
 /*
     In this example:
     we create a gamestate which renders a square on the 
-    screen at the world origin (0, 0). 
+    screen at the world origin (0, 0).
     Then, we use keyboard keys to move the origin around.
   
     We additionally render the screen coordinates and the 
     world coordinates in a 4x4 grid
+    
+    Note: This has a jarring effect if you don't know what to expect. You press the Up arrow key and the square goes down!
+    This is because you're moving the view / world.. the square is still in the same location in that world.
+    If there was a background image or effect it would be much more understandable.
 */
 
-manager.mount()
 const world = new World(suki.renderer)
 world.center()
 
