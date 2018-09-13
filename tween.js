@@ -2,7 +2,6 @@ import EventEmitter from "./events"
 import { SubSystem } from "./index"
 import { suki } from "./index"
 import ease from "./ease"
-// todo: use easings to properly affect our modifier inside of Tween::step
 
 const bounded = (value, min, max) => Math.min(max, Math.max(min, value))
 
