@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c",
+    "build": "echo \"Suki doesn't have a direct build step. Instead, import the libraries and files you need using parcel or rollup.\" && exit 1",
     "build:examples": "node examples/build-examples.js",
+    "build:distributable": "rollup -c",
     "dev": "rollup dev/index.js -o dev/bundle.js -f cjs -w"
   },
   "repository": {
