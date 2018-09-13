@@ -4,6 +4,6 @@ export default {
   input: 'index.js',
   output: {
     file: 'dist/suki.js',
-    format: 'umd'
+    format: 'iife'
   }
 };
