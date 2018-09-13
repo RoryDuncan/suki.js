@@ -9,8 +9,8 @@ See the [roadmap](https://github.com/RoryDuncan/suki.js/wiki/roadmap) for what's
 
 ## Getting Started
 
-1. Clone repository
-2. `npm install` to setup development dependencies.
-3. `npm run build` to build.
+```
+npm install @roryduncan/suki
+```
 
-      See the [package.json](/package.json) for more build options.
+Check out the wiki for more details on getting started.
