@@ -3,6 +3,15 @@ import EventEmitter from "./events"
 import Renderer from "./renderer"
 import { defer } from "./utils"
 
+export const events = {
+  READY: "ready",
+  TICK: "tick",
+  STEP: "step",
+  PRERENDER: "pre-render",
+  RENDER: "render",
+  POSTRENDER: "post-render",
+}
+
 /* 
     Suki
     
@@ -32,7 +41,7 @@ class Suki {
       if (document.readyState == "complete") {
         defer(() => {
           that.isReady = true
-          that.events.trigger("ready")
+          that.events.trigger(events.READY)
         })
         return true
       }
@@ -46,7 +55,7 @@ class Suki {
   
   whenReady(fn) {
     if (this.isReady) fn()
-    else this.events.on("ready", fn)
+    else this.events.on(events.READY, fn)
     return this
   }
   
@@ -105,7 +114,7 @@ class Suki {
         return
       }
       
-      that.events.trigger("tick", time)
+      that.events.trigger(events.TICK, time)
       
       // update time object with the new time and deltas
       _now = now()
@@ -115,7 +124,7 @@ class Suki {
       time.elapsed += time.delta
       
       // perform a step
-      that.events.trigger("step", time)
+      that.events.trigger(events.STEP, time)
       
       // after a step we measure the time it took to determine if too much processing 
       // occurred for an immediate render, a la, frame sklpping
@@ -132,10 +141,10 @@ class Suki {
       else {
         
         lastRender = _now
-        that.events.trigger("pre-render", time, that.renderer, that)
-        that.events.trigger("render", time, that.renderer, that)
+        that.events.trigger(events.PRERENDER, time, that.renderer, that)
+        that.events.trigger(events.RENDER, time, that.renderer, that)
         time.lastCalled = _now
-        that.events.trigger("post-render", time, that.renderer, that)
+        that.events.trigger(events.POSTRENDER, time, that.renderer, that)
       }
       
       time.id = window.requestAnimationFrame(tick)
@@ -172,19 +181,19 @@ export const SubSystem = (superclass = Object) =>  class SukiAttachedApp extends
   }
   
   mount() {
-    if (this.tick)        suki.events.on("tick",         this.tick,         this.data)
-    if (this.step)        suki.events.on("step",         this.step,         this.data)
-    if (this.preRender)   suki.events.on("pre-render",   this.preRender,    this.data)
-    if (this.render)      suki.events.on("render",       this.render,       this.data)
-    if (this.postRender)  suki.events.on("post-render",  this.postRender,   this.data)
+    if (this.tick)        suki.events.on(events.TICK,         this.tick,         this.data)
+    if (this.step)        suki.events.on(events.STEP,         this.step,         this.data)
+    if (this.preRender)   suki.events.on(events.PRERENDER,    this.preRender,    this.data)
+    if (this.render)      suki.events.on(events.RENDER,       this.render,       this.data)
+    if (this.postRender)  suki.events.on(events.POSTRENDER,   this.postRender,   this.data)
   }
   
   unmount() {
     
-    if (this.tick)        suki.events.off("tick",         this.tick,         this.data)
-    if (this.step)        suki.events.off("step",         this.step,         this.data)
-    if (this.preRender)   suki.events.off("pre-render",   this.preRender,    this.data)
-    if (this.render)      suki.events.off("render",       this.render,       this.data)
-    if (this.postRender)  suki.events.off("post-render",  this.postRender,   this.data)
+    if (this.tick)        suki.events.off(events.TICK,          this.tick,         this.data)
+    if (this.step)        suki.events.off(events.STEP,          this.step,         this.data)
+    if (this.preRender)   suki.events.off(events.PRERENDER,     this.preRender,    this.data)
+    if (this.render)      suki.events.off(events.RENDER,        this.render,       this.data)
+    if (this.postRender)  suki.events.off(events.POSTRENDER,    this.postRender,   this.data)
   }  
 }
