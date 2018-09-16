@@ -5,6 +5,8 @@ import { defer } from "./utils"
 
 export const events = {
   READY: "ready",
+  START: "start",
+  STOP: "stop",
   TICK: "tick",
   STEP: "step",
   PRERENDER: "pre-render",
@@ -71,7 +73,7 @@ class Suki {
     let fpms = 1000/fps
     
     console.log(`Stepping every ${fpms.toFixed(2)}ms, ${fps} frames per second`)
-    
+    this.events.trigger(events.START, this.renderer, this)
     this.running = true
     
     const that = this
@@ -158,6 +160,7 @@ class Suki {
   
   stop() {
     this.running = false
+    this.events.trigger(events.STOP, this.renderer, this)
   }
   
 }
