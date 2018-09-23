@@ -6,6 +6,7 @@ const valueReturningMethods = [
   "isPointInPath"
 ]
 
+// chains a canvas function, but returns the wrapper parameter
 let chainMethod = function(wrapper, fn, isGetter) {
   if (isGetter) {
     return (...args) => fn.apply(wrapper.context, args)
@@ -29,6 +30,7 @@ let chainProperty = function(wrapper, key) {
 }
 
 // Our wrapper around the Native HTML 2D Rendering Context
+// adds the ability to chain context methods
 export default class Context {
   
   constructor(width = 500, height = 500) {
