@@ -28,7 +28,7 @@ let chainProperty = function(wrapper, key) {
   }
 }
 
-// not defined as a class because we programmatically create the prototype below.
+// Our wrapper around the Native HTML 2D Rendering Context
 export default class Context {
   
   constructor(width = 500, height = 500) {
