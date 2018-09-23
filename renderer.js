@@ -67,7 +67,7 @@ export default class Renderer extends Context {
     return this.fillStyle(color).fill()
   }
   
-  fillWith(color = "#000") {
+  strokeWith(color = "#000") {
     return this.strokeStyle(color).stroke()
   }
   
