@@ -34,7 +34,7 @@ let chainProperty = function(wrapper, key) {
 export default class Context {
   
   constructor(width = 500, height = 500) {
-    
+    // todo: remove the default width and heights
     this.canvas = document.createElement("canvas")
     this.canvas.width = width
     this.canvas.height = height
