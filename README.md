@@ -13,4 +13,13 @@ See the [roadmap](https://github.com/RoryDuncan/suki.js/wiki/roadmap) for what's
 npm install @roryduncan/suki
 ```
 
-Check out the wiki for more details on getting started.
+
+### Resources
+
+-  [suki.js wiki](https://github.com/RoryDuncan/suki.js/wiki)
+
+    **Getting Started**, **Architectural Overview**, and **Documentation** are all located within the wiki.
+
+-  [suki-starter-kit](https://github.com/RoryDuncan/suki-starter-kit) 
+
+    Repository for kickstarting a project using suki.js
