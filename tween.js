@@ -41,7 +41,7 @@ manager.mount()
 
 export class Tween extends EventEmitter {
   
-  constructor(from, to) {
+  constructor() {
     super()
     
     this.loop       = false
@@ -58,7 +58,6 @@ export class Tween extends EventEmitter {
     }
     
     manager.add(this)
-    
   }
   
   from(context) {
